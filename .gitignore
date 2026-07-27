@@ -1,0 +1,8 @@
+.databricks/
+.venv/
+__pycache__/
+*.egg-info
+src/dbt_healthcare/target/
+src/dbt_healthcare/dbt_packages/
+src/dbt_healthcare/logs/
+.vscode/

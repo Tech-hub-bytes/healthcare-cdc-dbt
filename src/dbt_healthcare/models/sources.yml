@@ -1,0 +1,29 @@
+version: 2
+
+sources:
+  - name: healthcare_bronze
+    description: Bronze CDC tables from Lakeflow Auto Loader (Postgres-style CDC landing)
+    database: "{{ var('source_catalog') }}"
+    schema: "{{ var('source_schema') }}"
+    tables:
+      - name: bronze_patients_cdc
+        description: Raw patient CDC events (op, event_ts, attributes)
+        columns:
+          - name: patient_id
+            tests: [not_null]
+          - name: event_ts
+            tests: [not_null]
+      - name: bronze_providers_cdc
+        description: Raw provider CDC events
+        columns:
+          - name: provider_id
+            tests: [not_null]
+          - name: event_ts
+            tests: [not_null]
+      - name: bronze_claims_cdc
+        description: Raw claim CDC events
+        columns:
+          - name: claim_id
+            tests: [not_null]
+          - name: event_ts
+            tests: [not_null]

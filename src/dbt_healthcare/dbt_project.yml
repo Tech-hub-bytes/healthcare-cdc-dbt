@@ -1,0 +1,38 @@
+name: healthcare_cdc_dbt
+version: 1.0.0
+config-version: 2
+profile: healthcare_cdc_dbt
+
+model-paths: ["models"]
+snapshot-paths: ["snapshots"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+seed-paths: ["seeds"]
+analysis-paths: ["analyses"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  healthcare_cdc_dbt:
+    +materialized: view
+    staging:
+      +schema: staging
+      +materialized: view
+      +tags: ["staging"]
+    intermediate:
+      +schema: intermediate
+      +materialized: view
+      +tags: ["intermediate"]
+    marts:
+      +schema: marts
+      +materialized: table
+      +tags: ["marts", "gold"]
+
+snapshots:
+  healthcare_cdc_dbt:
+    +target_schema: hc_dbt_snapshots
+    +tags: ["scd2", "silver"]
+
+vars:
+  source_catalog: workspace
+  source_schema: hc_dbt_bronze

@@ -1,0 +1,41 @@
+bundle:
+  name: healthcare_cdc_dbt
+  uuid: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Unity Catalog catalog
+  bronze_schema:
+    description: Schema for CDC landing volume + bronze Delta tables
+  dbt_schema:
+    description: dbt target schema (custom schemas become <dbt_schema>_staging etc.)
+  warehouse_id:
+    description: SQL warehouse for dbt tasks
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://dbc-7c3eed4c-66bb.cloud.databricks.com
+    variables:
+      catalog: workspace
+      bronze_schema: hc_dbt_bronze
+      dbt_schema: hc_dbt
+      warehouse_id: "42de4ab0c2517664"
+  prod:
+    mode: production
+    workspace:
+      host: https://dbc-7c3eed4c-66bb.cloud.databricks.com
+      root_path: /Workspace/Users/muhammadaziz977@yahoo.com/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: workspace
+      bronze_schema: hc_dbt_bronze
+      dbt_schema: hc_dbt
+      warehouse_id: "42de4ab0c2517664"
+    permissions:
+      - user_name: muhammadaziz977@yahoo.com
+        level: CAN_MANAGE

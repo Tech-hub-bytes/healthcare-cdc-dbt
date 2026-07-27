@@ -1,0 +1,13 @@
+# Used for local runs. Databricks Jobs with warehouse_id auto-generate a profile at runtime.
+healthcare_cdc_dbt:
+  target: databricks
+  outputs:
+    databricks:
+      type: databricks
+      method: http
+      catalog: workspace
+      schema: hc_dbt
+      host: "{{ env_var('DBT_HOST', 'dbc-7c3eed4c-66bb.cloud.databricks.com') }}"
+      http_path: "{{ env_var('DBT_HTTP_PATH', '/sql/1.0/warehouses/42de4ab0c2517664') }}"
+      token: "{{ env_var('DBT_ACCESS_TOKEN') }}"
+      threads: 4

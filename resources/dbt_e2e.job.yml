@@ -1,0 +1,51 @@
+# End-to-end: seed CDC → bronze load → dbt build (SCD2 + gold)
+
+resources:
+  jobs:
+    healthcare_dbt_e2e:
+      name: healthcare_cdc_dbt_e2e
+      max_concurrent_runs: 1
+
+      parameters:
+        - name: catalog
+          default: ${var.catalog}
+        - name: bronze_schema
+          default: ${var.bronze_schema}
+
+      environments:
+        - environment_key: dbt_env
+          spec:
+            environment_version: "3"
+            dependencies:
+              - dbt-databricks>=1.8.0,<2.0.0
+
+      tasks:
+        - task_key: seed_postgres_cdc
+          notebook_task:
+            notebook_path: ../src/seed/seed_postgres_cdc.py
+            base_parameters:
+              catalog: "{{job.parameters.catalog}}"
+              schema: "{{job.parameters.bronze_schema}}"
+
+        - task_key: bronze_load
+          depends_on:
+            - task_key: seed_postgres_cdc
+          notebook_task:
+            notebook_path: ../src/seed/bronze_load.py
+            base_parameters:
+              catalog: "{{job.parameters.catalog}}"
+              schema: "{{job.parameters.bronze_schema}}"
+
+        - task_key: dbt_transform
+          depends_on:
+            - task_key: bronze_load
+          environment_key: dbt_env
+          dbt_task:
+            project_directory: ../src/dbt_healthcare
+            commands:
+              - "dbt deps"
+              - "dbt build"
+            warehouse_id: ${var.warehouse_id}
+            catalog: ${var.catalog}
+            schema: ${var.dbt_schema}
+            source: WORKSPACE

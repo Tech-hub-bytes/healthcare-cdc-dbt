@@ -1,0 +1,25 @@
+version: 2
+
+models:
+  - name: stg_patients_cdc
+    columns:
+      - name: patient_id
+        tests: [not_null]
+      - name: event_ts
+        tests: [not_null]
+  - name: stg_providers_cdc
+    columns:
+      - name: provider_id
+        tests: [not_null]
+  - name: stg_claims_cdc
+    columns:
+      - name: claim_id
+        tests: [not_null]
+  - name: stg_patients_current
+    columns:
+      - name: patient_id
+        tests: [unique, not_null]
+  - name: stg_providers_current
+    columns:
+      - name: provider_id
+        tests: [unique, not_null]

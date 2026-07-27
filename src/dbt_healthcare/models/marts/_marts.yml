@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: fct_claims
+    description: Claims fact SCD Type 1 (latest state per claim_id)
+    columns:
+      - name: claim_id
+        tests: [unique, not_null]
+      - name: patient_id
+        tests: [not_null]
+      - name: billed_amount
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+  - name: dim_patients_current
+    columns:
+      - name: patient_id
+        tests: [unique, not_null]
+  - name: dim_providers_current
+    columns:
+      - name: provider_id
+        tests: [unique, not_null]
+  - name: gold_claim_kpis
+    columns:
+      - name: claim_status
+        tests: [not_null]
+  - name: gold_claims_by_provider
+    columns:
+      - name: provider_id
+        tests: [not_null]
+  - name: gold_patients_current
+    columns:
+      - name: patient_id
+        tests: [unique, not_null]
+  - name: gold_patient_insurance_changes
+    columns:
+      - name: patient_id
+        tests: [not_null]
